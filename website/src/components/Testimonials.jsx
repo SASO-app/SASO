@@ -31,9 +31,10 @@ export default function Testimonials() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-extrabold text-navy sm:text-4xl">Hva kundene sier</h2>
-          <p className="mt-3 text-lg text-gray-600">
-            Vi er stolte av å ha hjulpet hundrevis av boligeiere på Vestlandet.
-          </p>
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-sky-light px-4 py-1.5 text-sm font-semibold text-navy">
+            <span className="text-yellow-400">★★★★★</span>
+            5.0 av 5 – 19 anmeldelser på Google
+          </div>
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

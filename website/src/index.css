@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0b3550;
-  --color-navy-dark: #082638;
-  --color-sky: #2aa9d8;
-  --color-sky-light: #e8f6fb;
-  --color-cta: #ff7a1a;
-  --color-cta-dark: #e3650a;
+  --color-navy: #154f50;
+  --color-navy-dark: #0d3536;
+  --color-sky: #4f9b96;
+  --color-sky-light: #f4f6ef;
+  --color-cta: #e94b8c;
+  --color-cta-dark: #d13579;
 
   --font-display: "Poppins", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;

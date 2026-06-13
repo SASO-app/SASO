@@ -42,12 +42,11 @@ export default function Hero() {
           Gratis og uforpliktende befaring · Svar innen 24 timer · Ingen skjulte kostnader
         </p>
 
-        <div className="mt-12 grid w-full max-w-2xl grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="mt-12 grid w-full max-w-xl grid-cols-3 gap-4">
           {[
-            ['10+', 'års erfaring'],
-            ['500+', 'fornøyde kunder'],
-            ['4.9★', 'i kundetilbakemeldinger'],
+            ['5.0★', '19 Google-anmeldelser'],
             ['3-5 år', 'varige resultater'],
+            ['100%', 'gratis befaring'],
           ].map(([stat, label]) => (
             <div key={label}>
               <div className="text-2xl font-bold sm:text-3xl">{stat}</div>

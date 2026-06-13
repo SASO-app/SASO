@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuoteModal } from '../context/QuoteModalContext'
+import logo from '../assets/logo/fasaderen-icon.png'
 
 const LINKS = [
   { href: '#tjenester', label: 'Tjenester' },
@@ -17,10 +18,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <a href="#hjem" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy text-lg font-bold text-white">
-            F
-          </span>
-          <span className="text-lg font-bold text-navy">Fasaderen</span>
+          <img src={logo} alt="Fasaderen" className="h-9 w-auto" />
+          <span className="font-display text-lg font-bold tracking-wide text-navy">FASADEREN</span>
         </a>
 
         <nav className="hidden items-center gap-6 lg:flex">

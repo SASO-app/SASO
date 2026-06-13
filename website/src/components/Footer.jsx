@@ -1,4 +1,5 @@
 import { useQuoteModal } from '../context/QuoteModalContext'
+import logo from '../assets/logo/fasaderen-icon.png'
 
 export default function Footer() {
   const { openModal } = useQuoteModal()
@@ -9,10 +10,8 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:grid-cols-3 sm:px-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-lg font-bold text-navy">
-              F
-            </span>
-            <span className="text-lg font-bold text-white">Fasaderen AS</span>
+            <img src={logo} alt="Fasaderen" className="h-9 w-auto brightness-0 invert" />
+            <span className="font-display text-lg font-bold tracking-wide text-white">FASADEREN</span>
           </div>
           <p className="text-sm">
             Sammen gjør vi byen renere og penere. Fasadevask, takvask og takrennerens i Bergen og Vestlandet.

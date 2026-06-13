@@ -19,9 +19,9 @@ const POINTS = [
   },
   {
     icon: '🛡️',
-    title: 'Forsikret og erfarent team',
+    title: 'Forsikret og kvalitetssikret',
     description:
-      'Over 10 års erfaring med fasade- og takvask på Vestlandet. Vi tar forholdsregler og jobber trygt, både for oss og din bolig.',
+      'Vi er forsikret og jobber etter faste rutiner for sikkerhet og kvalitet – trygt for oss og din bolig, hver gang.',
   },
   {
     icon: '🏡',
@@ -31,9 +31,9 @@ const POINTS = [
   },
   {
     icon: '⭐',
-    title: 'Fornøyde kunder på Vestlandet',
+    title: '5.0 på Google',
     description:
-      'Vi har hjulpet hundrevis av boligeiere i Bergen og omegn med å løfte førsteinntrykket av hjemmet sitt.',
+      'Vi har allerede 19 femstjernede anmeldelser fra fornøyde boligeiere i Bergen og omegn.',
   },
 ]
 
