@@ -22,7 +22,7 @@ export default function Footer() {
           <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-white">Kontakt</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="tel:+4741611876" className="hover:text-white">📞 416 11 876</a>
+              <a href="tel:+4755590555" className="hover:text-white">📞 555 90 555</a>
             </li>
             <li>
               <a href="mailto:post@fasaderen.no" className="hover:text-white">✉️ post@fasaderen.no</a>

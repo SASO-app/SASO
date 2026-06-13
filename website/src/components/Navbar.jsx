@@ -35,8 +35,8 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <a href="tel:+4741611876" className="text-sm font-semibold text-navy">
-            416 11 876
+          <a href="tel:+4755590555" className="text-sm font-semibold text-navy">
+            555 90 555
           </a>
           <button
             onClick={() => openModal()}

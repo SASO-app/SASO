@@ -200,7 +200,7 @@ export default function QuoteModal() {
 
               {status === 'error' && (
                 <p className="text-center text-sm text-red-600">
-                  Noe gikk galt. Ring oss heller på +47 416 11 876.
+                  Noe gikk galt. Ring oss heller på +47 555 90 555.
                 </p>
               )}
 
