@@ -1,11 +1,15 @@
 import godvikBefore from '../assets/gallery/godvik-before.jpg'
 import godvikAfter from '../assets/gallery/godvik-after.jpg'
+import gardsplass1Before from '../assets/gallery/gardsplass-1-before.jpg'
+import gardsplass1After from '../assets/gallery/gardsplass-1-after.jpg'
+import gardsplass2Before from '../assets/gallery/gardsplass-2-before.jpg'
+import gardsplass2After from '../assets/gallery/gardsplass-2-after.jpg'
 
 const PROJECTS = [
   { title: 'Betongfasade, Godvik', tag: 'Hyperwash', before: godvikBefore, after: godvikAfter },
   { title: 'Takvask, Fyllingsdalen', tag: 'Takfornying' },
-  { title: 'Takrennerens, Loddefjord', tag: 'Takrenner' },
-  { title: 'Gårdsplass, Askøy', tag: 'Høytrykksvask' },
+  { title: 'Gårdsplass og belegningsstein', tag: 'Høytrykksvask', before: gardsplass1Before, after: gardsplass1After },
+  { title: 'Uteområde, belegningsstein', tag: 'Høytrykksvask', before: gardsplass2Before, after: gardsplass2After },
 ]
 
 export default function Gallery() {
