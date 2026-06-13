@@ -1,5 +1,8 @@
+import godvikBefore from '../assets/gallery/godvik-before.jpg'
+import godvikAfter from '../assets/gallery/godvik-after.jpg'
+
 const PROJECTS = [
-  { title: 'Fasadevask, Godvik', tag: 'Softwash' },
+  { title: 'Betongfasade, Godvik', tag: 'Hyperwash', before: godvikBefore, after: godvikAfter },
   { title: 'Takvask, Fyllingsdalen', tag: 'Takfornying' },
   { title: 'Takrennerens, Loddefjord', tag: 'Takrenner' },
   { title: 'Gårdsplass, Askøy', tag: 'Høytrykksvask' },
@@ -20,12 +23,31 @@ export default function Gallery() {
           {PROJECTS.map((project) => (
             <div key={project.title} className="overflow-hidden rounded-2xl bg-white shadow-sm">
               <div className="grid grid-cols-2">
-                <div className="flex aspect-square items-center justify-center bg-gray-300 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Før
-                </div>
-                <div className="flex aspect-square items-center justify-center bg-sky/30 text-xs font-semibold uppercase tracking-wide text-navy">
-                  Etter
-                </div>
+                {project.before && project.after ? (
+                  <>
+                    <div className="relative aspect-square overflow-hidden">
+                      <img src={project.before} alt={`Før - ${project.title}`} className="h-full w-full object-cover" />
+                      <span className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                        Før
+                      </span>
+                    </div>
+                    <div className="relative aspect-square overflow-hidden">
+                      <img src={project.after} alt={`Etter - ${project.title}`} className="h-full w-full object-cover" />
+                      <span className="absolute bottom-2 left-2 rounded-full bg-cta px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                        Etter
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex aspect-square items-center justify-center bg-gray-300 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Før
+                    </div>
+                    <div className="flex aspect-square items-center justify-center bg-sky/30 text-xs font-semibold uppercase tracking-wide text-navy">
+                      Etter
+                    </div>
+                  </>
+                )}
               </div>
               <div className="p-4">
                 <span className="inline-block rounded-full bg-navy/10 px-2.5 py-0.5 text-xs font-semibold text-navy">
@@ -38,7 +60,7 @@ export default function Gallery() {
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-400">
-          * Bytt ut bildene med egne før/etter-bilder for å vise frem ekte resultater.
+          * Flere før/etter-bilder fra våre prosjekter kommer snart.
         </p>
       </div>
     </section>
