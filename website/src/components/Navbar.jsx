@@ -5,6 +5,7 @@ import logo from '../assets/logo/fasaderen-icon.png'
 const LINKS = [
   { href: '#tjenester', label: 'Tjenester' },
   { href: '#hvorfor-oss', label: 'Hvorfor oss' },
+  { href: '#teamet', label: 'Teamet' },
   { href: '#sa-fungerer-det', label: 'Slik fungerer det' },
   { href: '#omdomme', label: 'Omdømme' },
   { href: '#kontakt', label: 'Kontakt' },
