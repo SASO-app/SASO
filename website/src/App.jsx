@@ -10,6 +10,7 @@ import CTASection from './components/CTASection'
 import Footer from './components/Footer'
 import StickyCTA from './components/StickyCTA'
 import QuoteModal from './components/QuoteModal'
+import ScrollOfferPopup from './components/ScrollOfferPopup'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
       </main>
       <Footer />
       <StickyCTA />
+      <ScrollOfferPopup />
       <QuoteModal />
     </QuoteModalProvider>
   )
