@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuoteModal } from '../context/QuoteModalContext'
+import { useSegment } from '../context/SegmentContext'
 
 const SERVICES = [
   'Fasadevask (softwash)',
@@ -17,6 +18,7 @@ function encodeForm(data) {
 
 export default function QuoteModal() {
   const { isOpen, closeModal, preselectedService } = useQuoteModal()
+  const { isBedrift } = useSegment()
   const [status, setStatus] = useState('idle') // idle | sending | success | error
   const [form, setForm] = useState({
     name: '',
@@ -53,7 +55,11 @@ export default function QuoteModal() {
       await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encodeForm({ 'form-name': 'quote', ...form }),
+        body: encodeForm({
+          'form-name': 'quote',
+          ...form,
+          kundetype: isBedrift ? 'Bedrift / borettslag / sameie' : 'Privatperson',
+        }),
       })
       setStatus('success')
     } catch {
@@ -95,10 +101,12 @@ export default function QuoteModal() {
         ) : (
           <>
             <h3 className="mb-1 text-xl font-bold text-navy sm:text-2xl">
-              Få et gratis pristilbud
+              {isBedrift ? 'Få et gratis tilbud for boligselskapet' : 'Få et gratis pristilbud'}
             </h3>
             <p className="mb-5 text-sm text-gray-500">
-              Fyll ut på 30 sekunder. Ingen forpliktelser – vi tar kontakt for en uformell befaring.
+              {isBedrift
+                ? 'Fyll ut på 30 sekunder, og vi tar kontakt for en uformell befaring og et tydelig tilbud til styret.'
+                : 'Fyll ut på 30 sekunder. Ingen forpliktelser – vi tar kontakt for en uformell befaring.'}
             </p>
 
             <form
