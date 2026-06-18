@@ -80,6 +80,17 @@ export default function Hero() {
             </div>
           ))}
         </div>
+
+        {segment === 'bedrift' && (
+          <div className="mt-10 w-full max-w-xl border-t border-white/10 pt-6">
+            <p className="text-xs uppercase tracking-wide text-white/50">Erfaring fra blant annet</p>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-lg font-bold text-white/80">
+              <span>BOB</span>
+              <span>OBOS</span>
+              <span>Frydenbø</span>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

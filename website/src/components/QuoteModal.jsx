@@ -2,11 +2,20 @@ import { useEffect, useState } from 'react'
 import { useQuoteModal } from '../context/QuoteModalContext'
 import { useSegment } from '../context/SegmentContext'
 
-const SERVICES = [
+const PRIVAT_SERVICES = [
   'Fasadevask (softwash)',
-  'Takvask og takfornying',
+  'Takvask & takfornying',
   'Takrennerens',
   'Høytrykksvask',
+  'Vet ikke / ønsker rådgivning',
+]
+
+const BEDRIFT_SERVICES = [
+  'Fasadevask for boligselskap & næringsbygg',
+  'Vindusvask',
+  'Takbehandling',
+  'Parkeringsanlegg & oppstillingsplasser',
+  'Impregnering & langsiktig vedlikehold',
   'Vet ikke / ønsker rådgivning',
 ]
 
@@ -180,7 +189,7 @@ export default function QuoteModal() {
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
                 >
                   <option value="">Velg tjeneste</option>
-                  {SERVICES.map((s) => (
+                  {(isBedrift ? BEDRIFT_SERVICES : PRIVAT_SERVICES).map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
