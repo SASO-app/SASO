@@ -2,6 +2,7 @@ import { QuoteModalProvider } from './context/QuoteModalContext'
 import { SegmentProvider } from './context/SegmentContext'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import ClientLogos from './components/ClientLogos'
 import Services from './components/Services'
 import WhyUs from './components/WhyUs'
 import Team from './components/Team'
@@ -21,6 +22,7 @@ export default function App() {
         <Navbar />
         <main className="pb-16 lg:pb-0">
           <Hero />
+          <ClientLogos />
           <Services />
           <WhyUs />
           <Team />
