@@ -27,7 +27,7 @@ export default function Footer() {
             <li>
               <a href="mailto:post@fasaderen.no" className="hover:text-white">✉️ post@fasaderen.no</a>
             </li>
-            <li>📍 Godvikveien 60, 5179 Godvik</li>
+            <li>📍 Valavegen 50, 5355 Knarrevik</li>
             <li>🕐 Man–Fre: 07:00–17:00 · Helg: etter avtale</li>
           </ul>
         </div>
