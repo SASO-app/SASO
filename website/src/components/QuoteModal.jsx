@@ -61,7 +61,7 @@ export default function QuoteModal() {
     e.preventDefault()
     setStatus('sending')
     try {
-      await fetch('/', {
+      const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: encodeForm({
@@ -70,7 +70,11 @@ export default function QuoteModal() {
           kundetype: isBedrift ? 'Bedrift / borettslag / sameie' : 'Privatperson',
         }),
       })
-      setStatus('success')
+      if (response.ok) {
+        setStatus('success')
+      } else {
+        setStatus('error')
+      }
     } catch {
       setStatus('error')
     }
