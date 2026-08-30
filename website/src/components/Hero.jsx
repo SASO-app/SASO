@@ -11,7 +11,20 @@ export default function Hero() {
 
   return (
     <section id="hjem" className="relative overflow-hidden bg-navy text-white">
-      <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-dark to-black opacity-95" />
+      {/* Drone video background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        <source src="/Fasaderen%20Drone.mp4" type="video/mp4" />
+      </video>
+
+      {/* Semi-transparent overlay so text stays readable */}
+      <div className="absolute inset-0 bg-gradient-to-br from-navy/90 via-navy-dark/85 to-black/80" />
       <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-sky/20 blur-3xl" />
       <div className="absolute -bottom-24 left-1/4 h-72 w-72 rounded-full bg-cta/10 blur-3xl" />
 
