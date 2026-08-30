@@ -1,5 +1,3 @@
-import { useSegment } from '../context/SegmentContext'
-
 const CLIENTS = [
   { name: 'Frydenbø Eiendom', logo: null },
   { name: 'BOB', logo: null },
@@ -10,9 +8,6 @@ const CLIENTS = [
 ]
 
 export default function ClientLogos() {
-  const { segment } = useSegment()
-  if (segment !== 'bedrift') return null
-
   return (
     <section className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">

@@ -1,5 +1,4 @@
 import { QuoteModalProvider } from './context/QuoteModalContext'
-import { SegmentProvider } from './context/SegmentContext'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import ClientLogos from './components/ClientLogos'
@@ -17,25 +16,23 @@ import ScrollOfferPopup from './components/ScrollOfferPopup'
 
 export default function App() {
   return (
-    <SegmentProvider>
-      <QuoteModalProvider>
-        <Navbar />
-        <main className="pb-16 lg:pb-0">
-          <Hero />
-          <ClientLogos />
-          <Services />
-          <WhyUs />
-          <Team />
-          <Process />
-          <Gallery />
-          <Testimonials />
-          <CTASection />
-        </main>
-        <Footer />
-        <StickyCTA />
-        <ScrollOfferPopup />
-        <QuoteModal />
-      </QuoteModalProvider>
-    </SegmentProvider>
+    <QuoteModalProvider>
+      <Navbar />
+      <main className="pb-16 lg:pb-0">
+        <Hero />
+        <ClientLogos />
+        <Services />
+        <WhyUs />
+        <Team />
+        <Process />
+        <Gallery />
+        <Testimonials />
+        <CTASection />
+      </main>
+      <Footer />
+      <StickyCTA />
+      <ScrollOfferPopup />
+      <QuoteModal />
+    </QuoteModalProvider>
   )
 }

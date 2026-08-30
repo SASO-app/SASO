@@ -32,10 +32,10 @@ export default function ScrollOfferPopup() {
       >
         &times;
       </button>
-      <div className="mb-2 text-2xl">🏡</div>
-      <h3 className="mb-1 text-base font-bold text-navy">Nysgjerrig på prisen?</h3>
+      <div className="mb-2 text-2xl">🏢</div>
+      <h3 className="mb-1 text-base font-bold text-navy">Vil dere ha et tilbud?</h3>
       <p className="mb-4 text-sm text-gray-600">
-        Få en gratis og uforpliktende befaring, og et tydelig pristilbud samme uke.
+        Få en gratis og uforpliktende befaring, og et tydelig tilbud styret kan ta stilling til.
       </p>
       <button
         onClick={() => {
@@ -44,7 +44,7 @@ export default function ScrollOfferPopup() {
         }}
         className="w-full rounded-full bg-cta px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-cta/30 transition hover:bg-cta-dark"
       >
-        Få gratis befaring →
+        Book gratis befaring →
       </button>
     </div>
   )

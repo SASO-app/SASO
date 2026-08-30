@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useQuoteModal } from '../context/QuoteModalContext'
-import { useSegment } from '../context/SegmentContext'
 
-const PRIVAT_SERVICES = [
-  'Fasadevask (softwash)',
-  'Takvask & takfornying',
-  'Takrennerens',
-  'Høytrykksvask',
-  'Vet ikke / ønsker rådgivning',
-]
-
-const BEDRIFT_SERVICES = [
+const SERVICES = [
   'Fasadevask for boligselskap & næringsbygg',
   'Vindusvask',
   'Takbehandling',
+  'Takrennerens',
   'Parkeringsanlegg & oppstillingsplasser',
   'Impregnering & langsiktig vedlikehold',
   'Vet ikke / ønsker rådgivning',
@@ -27,8 +19,7 @@ function encodeForm(data) {
 
 export default function QuoteModal() {
   const { isOpen, closeModal, preselectedService } = useQuoteModal()
-  const { isBedrift } = useSegment()
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [status, setStatus] = useState('idle')
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -67,7 +58,7 @@ export default function QuoteModal() {
         body: encodeForm({
           'form-name': 'quote',
           ...form,
-          kundetype: isBedrift ? 'Bedrift / borettslag / sameie' : 'Privatperson',
+          kundetype: 'Bedrift / borettslag / sameie',
         }),
       })
       if (response.ok) {
@@ -114,12 +105,10 @@ export default function QuoteModal() {
         ) : (
           <>
             <h3 className="mb-1 text-xl font-bold text-navy sm:text-2xl">
-              {isBedrift ? 'Få et gratis tilbud for boligselskapet' : 'Få et gratis pristilbud'}
+              Få et gratis tilbud for boligselskapet
             </h3>
             <p className="mb-5 text-sm text-gray-500">
-              {isBedrift
-                ? 'Fyll ut på 30 sekunder, og vi tar kontakt for en uformell befaring og et tydelig tilbud til styret.'
-                : 'Fyll ut på 30 sekunder. Ingen forpliktelser – vi tar kontakt for en uformell befaring.'}
+              Fyll ut på 30 sekunder, og vi tar kontakt for en uformell befaring og et tydelig tilbud til styret.
             </p>
 
             <form
@@ -174,7 +163,7 @@ export default function QuoteModal() {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Adresse / sted</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Adresse / eiendommen</label>
                 <input
                   name="address"
                   value={form.address}
@@ -185,7 +174,7 @@ export default function QuoteModal() {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Hva trenger du hjelp med?</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Hva trenger dere hjelp med?</label>
                 <select
                   name="service"
                   value={form.service}
@@ -193,7 +182,7 @@ export default function QuoteModal() {
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
                 >
                   <option value="">Velg tjeneste</option>
-                  {(isBedrift ? BEDRIFT_SERVICES : PRIVAT_SERVICES).map((s) => (
+                  {SERVICES.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
@@ -207,7 +196,7 @@ export default function QuoteModal() {
                   onChange={handleChange}
                   rows={2}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                  placeholder="Beskriv kort hva du ønsker hjelp med"
+                  placeholder="Beskriv kort hva dere ønsker hjelp med"
                 />
               </div>
 
@@ -221,7 +210,7 @@ export default function QuoteModal() {
 
               {status === 'error' && (
                 <p className="text-center text-sm text-red-600">
-                  Noe gikk galt. Ring oss heller på +47 555 90 555.
+                  Noe gikk galt. Ring oss heller på 555 90 555.
                 </p>
               )}
 
