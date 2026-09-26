@@ -2,15 +2,15 @@ import { useQuoteModal } from '../context/QuoteModalContext'
 
 const SERVICES = [
   {
-    icon: '🏢',
-    title: 'Fasadevask for boligselskap & næringsbygg',
+    img: '/services/service-fasadevask.jpg',
+    title: 'Fasadevask',
     short: 'fasadevask',
     description:
       'Skånsom softwash på store fasadeflater. Vi kjenner kravene som følger med store porteføljer, fra blant annet BOB, OBOS og Frydenbø.',
     bullets: ['Erfaring med store porteføljer', 'Skånsomt for alle fasadematerialer', 'Dokumentert og forsikret arbeid'],
   },
   {
-    icon: '🪟',
+    img: '/services/service-vindusvask.jpg',
     title: 'Vindusvask',
     short: 'vindusvask',
     description:
@@ -18,7 +18,7 @@ const SERVICES = [
     bullets: ['Fellesarealer og fasader', 'Fleksibel frekvens', 'Kan inngå i fast avtale'],
   },
   {
-    icon: '🏙️',
+    img: '/services/service-takbehandling.jpg',
     title: 'Takbehandling',
     short: 'takbehandling',
     description:
@@ -26,7 +26,7 @@ const SERVICES = [
     bullets: ['Forebygger fukt- og moseskader', 'Forlenger takets levetid', 'Egnet for store takflater'],
   },
   {
-    icon: '🌧️',
+    img: null,
     title: 'Takrennerens',
     short: 'takrennerens',
     description:
@@ -34,20 +34,28 @@ const SERVICES = [
     bullets: ['Forhindrer lekkasjer og fuktskader', 'For hele bygg og boligselskap', 'Kan inngå i fast vedlikeholdsavtale'],
   },
   {
-    icon: '🚗',
+    img: '/services/service-hoytrykksvask.jpg',
+    title: 'Høytrykksvask',
+    short: 'høytrykksvask',
+    description:
+      'Effektiv høytrykksvask av utvendige flater, trappeoppganger, gårdsplasser og mer – fjerner smuss, alger og misfarging raskt.',
+    bullets: ['Utvendige flater og oppganger', 'Fjerner alger og misfarging', 'Kan kombineres med annet vedlikehold'],
+  },
+  {
+    img: '/services/service-takfornying.jpg',
+    title: 'Takfornying',
+    short: 'takfornying',
+    description:
+      'Vi fornyer og beskytter tak etter behov – enten med impregnering for langsiktig beskyttelse, eller fargelegging for et friskt og representativt utseende.',
+    bullets: ['Velg mellom impregnering eller ny farge', 'Montering av mønebånd og beslag', 'Forlenger takets levetid vesentlig'],
+  },
+  {
+    img: '/services/service-parkeringsanlegg.webp',
     title: 'Parkeringsanlegg & oppstillingsplasser',
     short: 'parkeringsanlegg',
     description:
       'Høytrykksrens av parkeringskjellere, garasjeanlegg, gårdsplasser og oppstillingsplasser – for et ryddig og representativt utområde.',
     bullets: ['Garasjeanlegg og p-kjellere', 'Gårdsplasser og gangveier', 'Fjerner olje, gørr og misfarging'],
-  },
-  {
-    icon: '🧪',
-    title: 'Impregnering & langsiktig vedlikehold',
-    short: 'impregnering',
-    description:
-      'Vi er eksperter på ulike fasadeprodukter, betong og stein, og velger riktig impregnering og behandling som beskytter bygget og verdien over tid.',
-    bullets: ['Riktig behandling for hvert material', 'Beskytter mot vær og forvitring', 'Kan kombineres med fast vedlikeholdsavtale'],
   },
 ]
 
@@ -70,26 +78,40 @@ export default function Services() {
           {SERVICES.map((service) => (
             <div
               key={service.title}
-              className="flex flex-col rounded-2xl border border-gray-100 bg-sky-light/40 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:p-8"
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-navy text-2xl">
-                {service.icon}
+              {service.img ? (
+                <div className="h-48 w-full overflow-hidden">
+                  <img
+                    src={service.img}
+                    alt={service.title}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div className="h-48 w-full bg-gradient-to-br from-navy/80 via-sky/60 to-sky-light flex items-center justify-center">
+                  <span className="text-5xl opacity-60">🌧️</span>
+                </div>
+              )}
+
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-xl font-bold text-navy">{service.title}</h3>
+                <p className="mt-2 flex-1 text-gray-600">{service.description}</p>
+                <ul className="mt-4 space-y-1.5">
+                  {service.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
+                      <span className="mt-0.5 text-sky">✔</span> {b}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => openModal(service.title)}
+                  className="mt-6 self-start rounded-full border-2 border-navy px-5 py-2 text-sm font-bold text-navy transition hover:bg-navy hover:text-white"
+                >
+                  Få pristilbud på {service.short}
+                </button>
               </div>
-              <h3 className="text-xl font-bold text-navy">{service.title}</h3>
-              <p className="mt-2 flex-1 text-gray-600">{service.description}</p>
-              <ul className="mt-4 space-y-1.5">
-                {service.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="mt-0.5 text-sky">✔</span> {b}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => openModal(service.title)}
-                className="mt-6 self-start rounded-full border-2 border-navy px-5 py-2 text-sm font-bold text-navy transition hover:bg-navy hover:text-white"
-              >
-                Få pristilbud på {service.short}
-              </button>
             </div>
           ))}
         </div>
