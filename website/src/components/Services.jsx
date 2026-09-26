@@ -35,6 +35,7 @@ const SERVICES = [
   },
   {
     img: '/services/service-hoytrykksvask.jpg',
+    imgPosition: 'center top',
     title: 'Høytrykksvask',
     short: 'høytrykksvask',
     description:
@@ -85,6 +86,7 @@ export default function Services() {
                   src={service.img}
                   alt={service.title}
                   className="h-full w-full object-cover"
+                  style={service.imgPosition ? { objectPosition: service.imgPosition } : undefined}
                   loading="lazy"
                 />
               </div>
