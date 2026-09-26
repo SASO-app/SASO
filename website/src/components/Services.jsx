@@ -10,7 +10,7 @@ const SERVICES = [
     bullets: ['Erfaring med store porteføljer', 'Skånsomt for alle fasadematerialer', 'Dokumentert og forsikret arbeid'],
   },
   {
-    img: '/services/service-vindusvask.jpg',
+    img: '/services/service-vindusvask.webp',
     title: 'Vindusvask',
     short: 'vindusvask',
     description:
@@ -26,7 +26,7 @@ const SERVICES = [
     bullets: ['Forebygger fukt- og moseskader', 'Forlenger takets levetid', 'Egnet for store takflater'],
   },
   {
-    img: null,
+    img: '/services/service-takrennerens.webp',
     title: 'Takrennerens',
     short: 'takrennerens',
     description:
@@ -80,20 +80,14 @@ export default function Services() {
               key={service.title}
               className="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
-              {service.img ? (
-                <div className="h-48 w-full overflow-hidden">
-                  <img
-                    src={service.img}
-                    alt={service.title}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              ) : (
-                <div className="h-48 w-full bg-gradient-to-br from-navy/80 via-sky/60 to-sky-light flex items-center justify-center">
-                  <span className="text-5xl opacity-60">🌧️</span>
-                </div>
-              )}
+              <div className="h-48 w-full overflow-hidden">
+                <img
+                  src={service.img}
+                  alt={service.title}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
 
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="text-xl font-bold text-navy">{service.title}</h3>
