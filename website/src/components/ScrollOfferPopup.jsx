@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useQuoteModal } from '../context/QuoteModalContext'
+import { useCampaignModal } from '../context/CampaignModalContext'
 
 export default function ScrollOfferPopup() {
-  const { openModal, isOpen: isQuoteModalOpen } = useQuoteModal()
+  const { open, isOpen: isCampaignOpen } = useCampaignModal()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function ScrollOfferPopup() {
 
   const close = () => setVisible(false)
 
-  if (!visible || isQuoteModalOpen) return null
+  if (!visible || isCampaignOpen) return null
 
   return (
     /* Backdrop */
@@ -88,7 +88,7 @@ export default function ScrollOfferPopup() {
           <button
             onClick={() => {
               close()
-              openModal('Takbehandling – Høstkampanje 30% rabatt')
+              open()
             }}
             className="mt-6 w-full rounded-full bg-cta py-3 text-base font-black text-white shadow-lg shadow-cta/30 transition hover:brightness-110"
           >

@@ -1,4 +1,6 @@
 import { QuoteModalProvider } from './context/QuoteModalContext'
+import { CampaignModalProvider } from './context/CampaignModalContext'
+import CampaignModal from './components/CampaignModal'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import ClientLogos from './components/ClientLogos'
@@ -17,6 +19,7 @@ import ScrollOfferPopup from './components/ScrollOfferPopup'
 
 export default function App() {
   return (
+    <CampaignModalProvider>
     <QuoteModalProvider>
       <Navbar />
       <main className="pb-16 lg:pb-0">
@@ -35,6 +38,8 @@ export default function App() {
       <StickyCTA />
       <ScrollOfferPopup />
       <QuoteModal />
+      <CampaignModal />
     </QuoteModalProvider>
+    </CampaignModalProvider>
   )
 }

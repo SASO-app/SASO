@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useQuoteModal } from '../context/QuoteModalContext'
+import { useCampaignModal } from '../context/CampaignModalContext'
 
 const DEADLINE = new Date('2026-10-31T23:59:59')
 
@@ -65,7 +65,7 @@ function Leaf({ top, left, right, size, opacity, rotate, delay }) {
 }
 
 export default function SeasonalCampaign() {
-  const { openModal } = useQuoteModal()
+  const { open } = useCampaignModal()
   const [timeLeft, setTimeLeft] = useState(getTimeLeft)
 
   useEffect(() => {
@@ -129,7 +129,7 @@ export default function SeasonalCampaign() {
           {/* CTAs */}
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <button
-              onClick={() => openModal('Takbehandling – Høstkampanje 30% rabatt')}
+              onClick={open}
               className="rounded-full bg-cta px-8 py-4 text-lg font-black text-white shadow-lg shadow-cta/40 transition hover:scale-105 hover:brightness-110"
             >
               Book gratis befaring nå →
