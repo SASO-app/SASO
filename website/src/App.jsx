@@ -9,6 +9,7 @@ import Process from './components/Process'
 import Gallery from './components/Gallery'
 import Testimonials from './components/Testimonials'
 import CTASection from './components/CTASection'
+import SeasonalCampaign from './components/SeasonalCampaign'
 import Footer from './components/Footer'
 import StickyCTA from './components/StickyCTA'
 import QuoteModal from './components/QuoteModal'
@@ -20,6 +21,7 @@ export default function App() {
       <Navbar />
       <main className="pb-16 lg:pb-0">
         <Hero />
+        <SeasonalCampaign />
         <ClientLogos />
         <Services />
         <WhyUs />
