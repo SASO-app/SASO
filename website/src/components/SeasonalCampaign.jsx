@@ -135,7 +135,7 @@ export default function SeasonalCampaign() {
               Book gratis befaring nå →
             </button>
             <a
-              href="tel:+4790073053"
+              href="tel:+4755590555"
               className="text-base font-semibold text-amber-300 underline-offset-4 hover:underline"
             >
               Eller ring oss direkte
