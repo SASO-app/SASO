@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useQuoteModal } from '../context/QuoteModalContext'
+import FormSuccessSteps from './FormSuccessSteps'
 
 const SERVICES = [
   'Fasadevask for boligselskap & næringsbygg',
   'Vindusvask',
   'Takbehandling',
   'Takrennerens',
+  'Høytrykksvask',
+  'Takfornying',
   'Parkeringsanlegg & oppstillingsplasser',
-  'Impregnering & langsiktig vedlikehold',
   'Vet ikke / ønsker rådgivning',
 ]
 
@@ -17,16 +19,16 @@ function encodeForm(data) {
     .join('&')
 }
 
+const INPUT = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-sky focus:ring-2 focus:ring-sky/30'
+
 export default function QuoteModal() {
   const { isOpen, closeModal, preselectedService } = useQuoteModal()
   const [status, setStatus] = useState('idle')
+  const [cityLoading, setCityLoading] = useState(false)
   const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    service: '',
-    message: '',
+    name: '', phone: '', email: '',
+    streetAddress: '', postalCode: '', postCity: '',
+    service: '', message: '',
   })
 
   useEffect(() => {
@@ -37,35 +39,47 @@ export default function QuoteModal() {
     } else {
       document.body.style.overflow = ''
     }
-    return () => {
-      document.body.style.overflow = ''
-    }
+    return () => { document.body.style.overflow = '' }
   }, [isOpen, preselectedService])
 
   if (!isOpen) return null
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+
+  const handlePostalCode = async (e) => {
+    const code = e.target.value.replace(/\D/g, '').slice(0, 4)
+    setForm((f) => ({ ...f, postalCode: code, postCity: code.length < 4 ? '' : f.postCity }))
+    if (code.length === 4) {
+      setCityLoading(true)
+      try {
+        const res = await fetch(`https://api.bring.com/shippingguide/api/postalCode.json?pnr=${code}`)
+        const data = await res.json()
+        setForm((f) => ({ ...f, postCity: data.isValidPostalCode ? data.city : '' }))
+      } catch { /* silent fail */ }
+      setCityLoading(false)
+    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
+    const address = [form.streetAddress, `${form.postalCode} ${form.postCity}`].filter(Boolean).join(', ').trim()
     try {
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: encodeForm({
           'form-name': 'quote',
-          ...form,
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          address,
+          service: form.service,
+          message: form.message,
           kundetype: 'Bedrift / borettslag / sameie',
         }),
       })
-      if (response.ok) {
-        setStatus('success')
-      } else {
-        setStatus('error')
-      }
+      setStatus(response.ok ? 'success' : 'error')
     } catch {
       setStatus('error')
     }
@@ -89,115 +103,84 @@ export default function QuoteModal() {
         </button>
 
         {status === 'success' ? (
-          <div className="py-6 text-center">
-            <div className="mb-3 text-4xl">✅</div>
-            <h3 className="mb-2 text-xl font-bold text-navy">Takk for din forespørsel!</h3>
-            <p className="text-gray-600">
-              Vi tar kontakt innen 24 timer for å avtale en gratis og uforpliktende befaring.
-            </p>
-            <button
-              onClick={closeModal}
-              className="mt-6 rounded-full bg-navy px-6 py-2 font-semibold text-white hover:bg-navy-dark"
-            >
-              Lukk
-            </button>
-          </div>
+          <FormSuccessSteps
+            onClose={closeModal}
+            note="Vi tar kontakt innen 24 timer for å avtale en gratis og uforpliktende befaring."
+          />
         ) : (
           <>
             <h3 className="mb-1 text-xl font-bold text-navy sm:text-2xl">
-              Få et gratis tilbud for boligselskapet
+              Få et gratis tilbud
             </h3>
             <p className="mb-5 text-sm text-gray-500">
-              Fyll ut på 30 sekunder, og vi tar kontakt for en uformell befaring og et tydelig tilbud til styret.
+              Fyll ut på 30 sekunder — vi kontakter deg for befaring og tydelig tilbud.
             </p>
 
-            <form
-              name="quote"
-              onSubmit={handleSubmit}
-              className="space-y-3"
-              data-netlify="true"
-            >
+            <form name="quote" onSubmit={handleSubmit} className="space-y-3" data-netlify="true">
               <input type="hidden" name="form-name" value="quote" />
               <p className="hidden">
-                <label>
-                  Don&apos;t fill this out: <input name="bot-field" onChange={handleChange} />
-                </label>
+                <label>Don&apos;t fill this out: <input name="bot-field" onChange={handleChange} /></label>
               </p>
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Navn *</label>
-                <input
-                  required
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                  placeholder="Ditt navn"
-                />
+                <input required name="name" value={form.name} onChange={handleChange} placeholder="Ditt navn" className={INPUT} />
               </div>
 
               <div className="flex gap-3">
                 <div className="flex-1">
                   <label className="mb-1 block text-sm font-medium text-gray-700">Telefon *</label>
-                  <input
-                    required
-                    type="tel"
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                    placeholder="123 45 678"
-                  />
+                  <input required type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="123 45 678" className={INPUT} />
                 </div>
                 <div className="flex-1">
-                  <label className="mb-1 block text-sm font-medium text-gray-700">E-post</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                    placeholder="navn@epost.no"
-                  />
+                  <label className="mb-1 block text-sm font-medium text-gray-700">E-post *</label>
+                  <input required type="email" name="email" value={form.email} onChange={handleChange} placeholder="navn@epost.no" className={INPUT} />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Adresse / eiendommen</label>
-                <input
-                  name="address"
-                  value={form.address}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                  placeholder="Gateadresse, postnummer"
-                />
+                <label className="mb-1 block text-sm font-medium text-gray-700">Gateadresse</label>
+                <input name="streetAddress" value={form.streetAddress} onChange={handleChange} placeholder="Gateveien 1" className={INPUT} />
+              </div>
+
+              <div className="flex gap-2">
+                <div style={{ width: '100px' }}>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Postnr.</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={4}
+                    name="postalCode"
+                    value={form.postalCode}
+                    onChange={handlePostalCode}
+                    placeholder="5000"
+                    className={INPUT}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Poststed</label>
+                  <input
+                    type="text"
+                    name="postCity"
+                    value={cityLoading ? '' : form.postCity}
+                    onChange={handleChange}
+                    placeholder={cityLoading ? 'Henter…' : 'Automatisk utfylt'}
+                    className={INPUT + ' bg-gray-50'}
+                  />
+                </div>
               </div>
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Hva trenger dere hjelp med?</label>
-                <select
-                  name="service"
-                  value={form.service}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                >
+                <select name="service" value={form.service} onChange={handleChange} className={INPUT}>
                   <option value="">Velg tjeneste</option>
-                  {SERVICES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
+                  {SERVICES.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Melding (valgfritt)</label>
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  rows={2}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-sky focus:ring-2 focus:ring-sky/30"
-                  placeholder="Beskriv kort hva dere ønsker hjelp med"
-                />
+                <textarea name="message" value={form.message} onChange={handleChange} rows={2} placeholder="Beskriv kort hva dere ønsker hjelp med" className={INPUT} />
               </div>
 
               <button
@@ -209,14 +192,10 @@ export default function QuoteModal() {
               </button>
 
               {status === 'error' && (
-                <p className="text-center text-sm text-red-600">
-                  Noe gikk galt. Ring oss heller på 555 90 555.
-                </p>
+                <p className="text-center text-sm text-red-600">Noe gikk galt. Ring oss heller på 555 90 555.</p>
               )}
 
-              <p className="text-center text-xs text-gray-400">
-                Vi bruker kun dine opplysninger til å gi deg et pristilbud.
-              </p>
+              <p className="text-center text-xs text-gray-400">Vi bruker kun dine opplysninger til å gi deg et pristilbud.</p>
             </form>
           </>
         )}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useCampaignModal } from '../context/CampaignModalContext'
+import FormSuccessSteps from './FormSuccessSteps'
 
 const FORM_NAME = 'campaign-hoest-2026'
 
@@ -9,18 +10,37 @@ function encode(data) {
     .join('&')
 }
 
+const INPUT = 'w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-sky focus:ring-2 focus:ring-sky/20'
+const LABEL = 'mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500'
+
 export default function CampaignModal() {
   const { isOpen, close } = useCampaignModal()
-  const [fields, setFields] = useState({ name: '', phone: '', address: '' })
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [fields, setFields] = useState({ name: '', email: '', phone: '', streetAddress: '', postalCode: '', postCity: '' })
+  const [status, setStatus] = useState('idle')
+  const [cityLoading, setCityLoading] = useState(false)
 
   if (!isOpen) return null
 
   const set = (k) => (e) => setFields((f) => ({ ...f, [k]: e.target.value }))
 
+  const handlePostalCode = async (e) => {
+    const code = e.target.value.replace(/\D/g, '').slice(0, 4)
+    setFields((f) => ({ ...f, postalCode: code, postCity: code.length < 4 ? '' : f.postCity }))
+    if (code.length === 4) {
+      setCityLoading(true)
+      try {
+        const res = await fetch(`https://api.bring.com/shippingguide/api/postalCode.json?pnr=${code}`)
+        const data = await res.json()
+        setFields((f) => ({ ...f, postCity: data.isValidPostalCode ? data.city : '' }))
+      } catch { /* silent fail — user can type city manually */ }
+      setCityLoading(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
+    const address = [fields.streetAddress, `${fields.postalCode} ${fields.postCity}`].filter(Boolean).join(', ').trim()
     try {
       const res = await fetch('/', {
         method: 'POST',
@@ -30,7 +50,10 @@ export default function CampaignModal() {
           'bot-field': '',
           service: 'Takbehandling – mose, alger og sopp',
           kampanje: 'Høstkampanje 2026 -30%',
-          ...fields,
+          name: fields.name,
+          email: fields.email,
+          phone: fields.phone,
+          address,
         }),
       })
       setStatus(res.ok ? 'success' : 'error')
@@ -57,19 +80,12 @@ export default function CampaignModal() {
         </button>
 
         {status === 'success' ? (
-          <div className="py-6 text-center">
-            <div className="mb-3 text-5xl">🍂</div>
-            <h3 className="text-xl font-black text-navy">Vi kontakter deg!</h3>
-            <p className="mt-2 text-sm text-gray-500">
-              Vi ringer deg for å avtale gratis befaring. Husk — 30&nbsp;% rabatt gjelder ut oktober.
-            </p>
-            <button onClick={close} className="mt-6 rounded-full bg-navy px-6 py-2.5 text-sm font-bold text-white">
-              Lukk
-            </button>
-          </div>
+          <FormSuccessSteps
+            onClose={close}
+            note="Vi ringer deg for å avtale befaring. 30 % rabatt gjelder ut oktober."
+          />
         ) : (
           <>
-            {/* Header */}
             <div className="mb-5 text-center">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-700">
                 🍂 Høstkampanje 2026
@@ -84,45 +100,50 @@ export default function CampaignModal() {
 
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Navn
-                </label>
-                <input
-                  required
-                  type="text"
-                  value={fields.name}
-                  onChange={set('name')}
-                  placeholder="Kari Nordmann"
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-sky focus:ring-2 focus:ring-sky/20"
-                />
+                <label className={LABEL}>Navn</label>
+                <input required type="text" value={fields.name} onChange={set('name')} placeholder="Kari Nordmann" className={INPUT} />
+              </div>
+
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <label className={LABEL}>E-post</label>
+                  <input required type="email" value={fields.email} onChange={set('email')} placeholder="navn@epost.no" className={INPUT} />
+                </div>
+                <div className="flex-1">
+                  <label className={LABEL}>Telefon</label>
+                  <input required type="tel" value={fields.phone} onChange={set('phone')} placeholder="900 00 000" className={INPUT} />
+                </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Telefon
-                </label>
-                <input
-                  required
-                  type="tel"
-                  value={fields.phone}
-                  onChange={set('phone')}
-                  placeholder="900 00 000"
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-sky focus:ring-2 focus:ring-sky/20"
-                />
+                <label className={LABEL}>Gateadresse</label>
+                <input required type="text" value={fields.streetAddress} onChange={set('streetAddress')} placeholder="Gateveien 1" className={INPUT} />
               </div>
 
-              <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Adresse
-                </label>
-                <input
-                  required
-                  type="text"
-                  value={fields.address}
-                  onChange={set('address')}
-                  placeholder="Gateveien 1, 5000 Bergen"
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-sky focus:ring-2 focus:ring-sky/20"
-                />
+              <div className="flex gap-2">
+                <div style={{ width: '110px' }}>
+                  <label className={LABEL}>Postnr.</label>
+                  <input
+                    required
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={fields.postalCode}
+                    onChange={handlePostalCode}
+                    placeholder="5000"
+                    className={INPUT}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className={LABEL}>Poststed</label>
+                  <input
+                    type="text"
+                    value={cityLoading ? '' : fields.postCity}
+                    onChange={set('postCity')}
+                    placeholder={cityLoading ? 'Henter…' : 'Automatisk utfylt'}
+                    className={INPUT + ' bg-gray-50'}
+                  />
+                </div>
               </div>
 
               {status === 'error' && (
