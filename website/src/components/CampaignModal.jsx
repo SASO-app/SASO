@@ -82,7 +82,7 @@ export default function CampaignModal() {
         {status === 'success' ? (
           <FormSuccessSteps
             onClose={close}
-            note="Vi ringer deg for å avtale befaring. 30 % rabatt gjelder ut oktober."
+            note="Tilbudet er på vei. Trenger vi befaring, ringer vi deg — ellers leverer vi pris basert på digital gjennomgang."
           />
         ) : (
           <>

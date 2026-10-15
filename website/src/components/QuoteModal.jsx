@@ -105,7 +105,7 @@ export default function QuoteModal() {
         {status === 'success' ? (
           <FormSuccessSteps
             onClose={closeModal}
-            note="Vi tar kontakt innen 24 timer for å avtale en gratis og uforpliktende befaring."
+            note="Tilbudet er på vei. Trenger vi befaring, ringer vi deg — ellers leverer vi pris basert på digital gjennomgang."
           />
         ) : (
           <>
