@@ -29,9 +29,9 @@ export default function CampaignModal() {
     if (code.length === 4) {
       setCityLoading(true)
       try {
-        const res = await fetch(`https://api.bring.com/shippingguide/api/postalCode.json?pnr=${code}`)
+        const res = await fetch(`/.netlify/functions/postalcode?pnr=${code}`)
         const data = await res.json()
-        setFields((f) => ({ ...f, postCity: data.isValidPostalCode ? data.city : '' }))
+        setFields((f) => ({ ...f, postCity: data.valid ? data.city : '' }))
       } catch { /* silent fail — user can type city manually */ }
       setCityLoading(false)
     }
@@ -159,7 +159,7 @@ export default function CampaignModal() {
               </button>
 
               <p className="text-center text-xs text-gray-400">
-                Ingen forpliktelse · Vi ringer deg innen 24 timer
+                Ingen forpliktelse
               </p>
             </form>
           </>

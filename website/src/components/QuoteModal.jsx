@@ -52,9 +52,9 @@ export default function QuoteModal() {
     if (code.length === 4) {
       setCityLoading(true)
       try {
-        const res = await fetch(`https://api.bring.com/shippingguide/api/postalCode.json?pnr=${code}`)
+        const res = await fetch(`/.netlify/functions/postalcode?pnr=${code}`)
         const data = await res.json()
-        setForm((f) => ({ ...f, postCity: data.isValidPostalCode ? data.city : '' }))
+        setForm((f) => ({ ...f, postCity: data.valid ? data.city : '' }))
       } catch { /* silent fail */ }
       setCityLoading(false)
     }
