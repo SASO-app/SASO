@@ -68,31 +68,26 @@ export default function QuoteModal() {
     e.preventDefault()
     setStatus('sending')
     setCrmError(null)
-    const address = [form.streetAddress, `${form.postalCode} ${form.postCity}`].filter(Boolean).join(', ').trim()
 
-    let crmOk = false
-    let crmFeil = null
+    const fd = new FormData(e.target)
+    const data = Object.fromEntries(fd)
+    data.service = fd.getAll('service').join(', ')
+    data.adresse = [data.streetAddress, `${data.postalCode} ${data.postCity}`].filter(Boolean).join(', ').trim()
+    data.kundetype = 'Bedrift / borettslag / sameie'
+    data.skjema = 'quote'
+    data.side = location.href
+
+    let crmOk = false, crmFeil = null
     try {
       const r = await fetch(CRM_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          skjema: 'quote',
-          navn: form.name,
-          telefon: form.phone,
-          epost: form.email,
-          adresse: address,
-          tjeneste: form.service ? [form.service] : [],
-          kundetype: 'Bedrift / borettslag / sameie',
-          melding: form.message,
-          side: window.location.href,
-          nettside: '',
-        }),
+        body: JSON.stringify(data),
       })
       const d = await r.json()
       crmOk = d.ok === true
       if (!crmOk) crmFeil = d.feil || null
-    } catch { /* network */ }
+    } catch {}
 
     let netlifyOk = false
     try {
@@ -101,26 +96,21 @@ export default function QuoteModal() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: encodeForm({
           'form-name': 'quote',
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          address,
-          service: form.service,
-          message: form.message,
-          kundetype: 'Bedrift / borettslag / sameie',
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          address: data.adresse,
+          service: data.service,
+          message: data.message,
+          kundetype: data.kundetype,
         }),
       })
       netlifyOk = response.ok
-    } catch { /* network */ }
+    } catch {}
 
-    if (crmOk || netlifyOk) {
-      setStatus('success')
-    } else if (crmFeil) {
-      setCrmError(crmFeil)
-      setStatus('idle')
-    } else {
-      setStatus('error')
-    }
+    if (crmOk || netlifyOk) setStatus('success')
+    else if (crmFeil) { setCrmError(crmFeil); setStatus('idle') }
+    else setStatus('error')
   }
 
   return (
