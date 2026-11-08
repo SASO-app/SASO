@@ -76,6 +76,10 @@ export default function QuoteModal() {
     data.kundetype = 'Bedrift / borettslag / sameie'
     data.skjema = 'quote'
     data.side = location.href
+    data.nettside = ''
+    data.navn = data.name || ''
+    data.telefon = data.phone || ''
+    data.epost = data.email || ''
 
     let crmOk = false, crmFeil = null
     try {
@@ -87,7 +91,7 @@ export default function QuoteModal() {
       const d = await r.json()
       crmOk = d.ok === true
       if (!crmOk) crmFeil = d.feil || null
-    } catch {}
+    } catch (err) { console.error('[CRM quote]', err) }
 
     let netlifyOk = false
     try {

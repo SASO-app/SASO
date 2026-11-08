@@ -51,6 +51,10 @@ export default function CampaignModal() {
     data.melding = 'Høstkampanje 2026 -30%'
     data.skjema = 'kampanje'
     data.side = location.href
+    data.nettside = ''
+    data.navn = data.name || ''
+    data.telefon = data.phone || ''
+    data.epost = data.email || ''
 
     let crmOk = false, crmFeil = null
     try {
@@ -62,7 +66,7 @@ export default function CampaignModal() {
       const d = await r.json()
       crmOk = d.ok === true
       if (!crmOk) crmFeil = d.feil || null
-    } catch {}
+    } catch (err) { console.error('[CRM kampanje]', err) }
 
     let netlifyOk = false
     try {
