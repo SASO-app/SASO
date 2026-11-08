@@ -3,6 +3,7 @@ import { useCampaignModal } from '../context/CampaignModalContext'
 import FormSuccessSteps from './FormSuccessSteps'
 
 const FORM_NAME = 'campaign-hoest-2026'
+const CRM_URL = 'https://script.google.com/macros/s/AKfycbzRKZc8b2A_aMYwIO0xKRkkHODm4ZNXG-9D6-0nvUYPn_CtC1gzkhJ8gFA_azfHhrKi/exec'
 
 function encode(data) {
   return Object.entries(data)
@@ -17,6 +18,7 @@ export default function CampaignModal() {
   const { isOpen, close } = useCampaignModal()
   const [fields, setFields] = useState({ name: '', email: '', phone: '', streetAddress: '', postalCode: '', postCity: '' })
   const [status, setStatus] = useState('idle')
+  const [crmError, setCrmError] = useState(null)
   const [cityLoading, setCityLoading] = useState(false)
 
   if (!isOpen) return null
@@ -40,7 +42,29 @@ export default function CampaignModal() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
-    const address = [fields.streetAddress, `${fields.postalCode} ${fields.postCity}`].filter(Boolean).join(', ').trim()
+    setCrmError(null)
+
+    const fd = new FormData(e.target)
+    const data = Object.fromEntries(fd)
+    data.service = 'Takbehandling – mose, alger og sopp'
+    data.adresse = [data.streetAddress, `${data.postalCode} ${data.postCity}`].filter(Boolean).join(', ').trim()
+    data.melding = 'Høstkampanje 2026 -30%'
+    data.skjema = 'kampanje'
+    data.side = location.href
+
+    let crmOk = false, crmFeil = null
+    try {
+      const r = await fetch(CRM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data),
+      })
+      const d = await r.json()
+      crmOk = d.ok === true
+      if (!crmOk) crmFeil = d.feil || null
+    } catch {}
+
+    let netlifyOk = false
     try {
       const res = await fetch('/', {
         method: 'POST',
@@ -48,18 +72,20 @@ export default function CampaignModal() {
         body: encode({
           'form-name': FORM_NAME,
           'bot-field': '',
-          service: 'Takbehandling – mose, alger og sopp',
-          kampanje: 'Høstkampanje 2026 -30%',
-          name: fields.name,
-          email: fields.email,
-          phone: fields.phone,
-          address,
+          service: data.service,
+          kampanje: data.melding,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.adresse,
         }),
       })
-      setStatus(res.ok ? 'success' : 'error')
-    } catch {
-      setStatus('error')
-    }
+      netlifyOk = res.ok
+    } catch {}
+
+    if (crmOk || netlifyOk) setStatus('success')
+    else if (crmFeil) { setCrmError(crmFeil); setStatus('idle') }
+    else setStatus('error')
   }
 
   return (
@@ -101,23 +127,23 @@ export default function CampaignModal() {
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label className={LABEL}>Navn</label>
-                <input required type="text" value={fields.name} onChange={set('name')} placeholder="Kari Nordmann" className={INPUT} />
+                <input required type="text" name="name" value={fields.name} onChange={set('name')} placeholder="Kari Nordmann" className={INPUT} />
               </div>
 
               <div className="flex gap-2">
                 <div className="flex-1">
                   <label className={LABEL}>E-post</label>
-                  <input required type="email" value={fields.email} onChange={set('email')} placeholder="navn@epost.no" className={INPUT} />
+                  <input required type="email" name="email" value={fields.email} onChange={set('email')} placeholder="navn@epost.no" className={INPUT} />
                 </div>
                 <div className="flex-1">
                   <label className={LABEL}>Telefon</label>
-                  <input required type="tel" value={fields.phone} onChange={set('phone')} placeholder="900 00 000" className={INPUT} />
+                  <input required type="tel" name="phone" value={fields.phone} onChange={set('phone')} placeholder="900 00 000" className={INPUT} />
                 </div>
               </div>
 
               <div>
                 <label className={LABEL}>Gateadresse</label>
-                <input required type="text" value={fields.streetAddress} onChange={set('streetAddress')} placeholder="Gateveien 1" className={INPUT} />
+                <input required type="text" name="streetAddress" value={fields.streetAddress} onChange={set('streetAddress')} placeholder="Gateveien 1" className={INPUT} />
               </div>
 
               <div className="flex gap-2">
@@ -128,6 +154,7 @@ export default function CampaignModal() {
                     type="text"
                     inputMode="numeric"
                     maxLength={4}
+                    name="postalCode"
                     value={fields.postalCode}
                     onChange={handlePostalCode}
                     placeholder="5000"
@@ -138,6 +165,7 @@ export default function CampaignModal() {
                   <label className={LABEL}>Poststed</label>
                   <input
                     type="text"
+                    name="postCity"
                     value={cityLoading ? '' : fields.postCity}
                     onChange={set('postCity')}
                     placeholder={cityLoading ? 'Henter…' : 'Automatisk utfylt'}
@@ -146,8 +174,10 @@ export default function CampaignModal() {
                 </div>
               </div>
 
-              {status === 'error' && (
-                <p className="text-center text-xs text-red-500">Noe gikk galt. Ring oss på 555 90 555.</p>
+              {(status === 'error' || crmError) && (
+                <p className="text-center text-xs text-red-500">
+                  {crmError || 'Noe gikk galt. Ring oss på 55 59 05 55 eller send e-post til post@fasaderen.no.'}
+                </p>
               )}
 
               <button

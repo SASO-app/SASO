@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useQuoteModal } from '../context/QuoteModalContext'
 import FormSuccessSteps from './FormSuccessSteps'
 
+const CRM_URL = 'https://script.google.com/macros/s/AKfycbzRKZc8b2A_aMYwIO0xKRkkHODm4ZNXG-9D6-0nvUYPn_CtC1gzkhJ8gFA_azfHhrKi/exec'
+
 const SERVICES = [
   'Fasadevask for boligselskap & næringsbygg',
   'Vindusvask',
@@ -24,6 +26,7 @@ const INPUT = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outlin
 export default function QuoteModal() {
   const { isOpen, closeModal, preselectedService } = useQuoteModal()
   const [status, setStatus] = useState('idle')
+  const [crmError, setCrmError] = useState(null)
   const [cityLoading, setCityLoading] = useState(false)
   const [form, setForm] = useState({
     name: '', phone: '', email: '',
@@ -34,6 +37,7 @@ export default function QuoteModal() {
   useEffect(() => {
     if (isOpen) {
       setStatus('idle')
+      setCrmError(null)
       setForm((f) => ({ ...f, service: preselectedService || '' }))
       document.body.style.overflow = 'hidden'
     } else {
@@ -63,26 +67,50 @@ export default function QuoteModal() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
-    const address = [form.streetAddress, `${form.postalCode} ${form.postCity}`].filter(Boolean).join(', ').trim()
+    setCrmError(null)
+
+    const fd = new FormData(e.target)
+    const data = Object.fromEntries(fd)
+    data.service = fd.getAll('service').join(', ')
+    data.adresse = [data.streetAddress, `${data.postalCode} ${data.postCity}`].filter(Boolean).join(', ').trim()
+    data.kundetype = 'Bedrift / borettslag / sameie'
+    data.skjema = 'quote'
+    data.side = location.href
+
+    let crmOk = false, crmFeil = null
+    try {
+      const r = await fetch(CRM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data),
+      })
+      const d = await r.json()
+      crmOk = d.ok === true
+      if (!crmOk) crmFeil = d.feil || null
+    } catch {}
+
+    let netlifyOk = false
     try {
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: encodeForm({
           'form-name': 'quote',
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          address,
-          service: form.service,
-          message: form.message,
-          kundetype: 'Bedrift / borettslag / sameie',
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          address: data.adresse,
+          service: data.service,
+          message: data.message,
+          kundetype: data.kundetype,
         }),
       })
-      setStatus(response.ok ? 'success' : 'error')
-    } catch {
-      setStatus('error')
-    }
+      netlifyOk = response.ok
+    } catch {}
+
+    if (crmOk || netlifyOk) setStatus('success')
+    else if (crmFeil) { setCrmError(crmFeil); setStatus('idle') }
+    else setStatus('error')
   }
 
   return (
@@ -191,8 +219,10 @@ export default function QuoteModal() {
                 {status === 'sending' ? 'Sender...' : 'Send forespørsel – helt gratis'}
               </button>
 
-              {status === 'error' && (
-                <p className="text-center text-sm text-red-600">Noe gikk galt. Ring oss heller på 555 90 555.</p>
+              {(status === 'error' || crmError) && (
+                <p className="text-center text-sm text-red-600">
+                  {crmError || 'Noe gikk galt. Ring oss på 55 59 05 55 eller send e-post til post@fasaderen.no.'}
+                </p>
               )}
 
               <p className="text-center text-xs text-gray-400">Vi bruker kun dine opplysninger til å gi deg et pristilbud.</p>
