@@ -1,4 +1,4 @@
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const pnr = (event.queryStringParameters?.pnr || '').replace(/\D/g, '')
   if (pnr.length !== 4) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid postal code' }) }
