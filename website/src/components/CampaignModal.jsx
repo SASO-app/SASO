@@ -3,6 +3,7 @@ import { useCampaignModal } from '../context/CampaignModalContext'
 import FormSuccessSteps from './FormSuccessSteps'
 
 const FORM_NAME = 'campaign-hoest-2026'
+const CRM_URL = 'https://script.google.com/macros/s/AKfycbzRKZc8b2A_aMYwIO0xKRkkHODm4ZNXG-9D6-0nvUYPn_CtC1gzkhJ8gFA_azfHhrKi/exec'
 
 function encode(data) {
   return Object.entries(data)
@@ -17,6 +18,7 @@ export default function CampaignModal() {
   const { isOpen, close } = useCampaignModal()
   const [fields, setFields] = useState({ name: '', email: '', phone: '', streetAddress: '', postalCode: '', postCity: '' })
   const [status, setStatus] = useState('idle')
+  const [crmError, setCrmError] = useState(null)
   const [cityLoading, setCityLoading] = useState(false)
 
   if (!isOpen) return null
@@ -40,7 +42,34 @@ export default function CampaignModal() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
+    setCrmError(null)
     const address = [fields.streetAddress, `${fields.postalCode} ${fields.postCity}`].filter(Boolean).join(', ').trim()
+
+    let crmOk = false
+    let crmFeil = null
+    try {
+      const r = await fetch(CRM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          skjema: 'kampanje',
+          navn: fields.name,
+          telefon: fields.phone,
+          epost: fields.email,
+          adresse: address,
+          tjeneste: ['Takbehandling – mose, alger og sopp'],
+          kundetype: '',
+          melding: 'Høstkampanje 2026 -30%',
+          side: window.location.href,
+          nettside: '',
+        }),
+      })
+      const d = await r.json()
+      crmOk = d.ok === true
+      if (!crmOk) crmFeil = d.feil || null
+    } catch { /* network */ }
+
+    let netlifyOk = false
     try {
       const res = await fetch('/', {
         method: 'POST',
@@ -56,8 +85,15 @@ export default function CampaignModal() {
           address,
         }),
       })
-      setStatus(res.ok ? 'success' : 'error')
-    } catch {
+      netlifyOk = res.ok
+    } catch { /* network */ }
+
+    if (crmOk || netlifyOk) {
+      setStatus('success')
+    } else if (crmFeil) {
+      setCrmError(crmFeil)
+      setStatus('idle')
+    } else {
       setStatus('error')
     }
   }
@@ -146,8 +182,10 @@ export default function CampaignModal() {
                 </div>
               </div>
 
-              {status === 'error' && (
-                <p className="text-center text-xs text-red-500">Noe gikk galt. Ring oss på 555 90 555.</p>
+              {(status === 'error' || crmError) && (
+                <p className="text-center text-xs text-red-500">
+                  {crmError || 'Noe gikk galt. Ring oss på 55 59 05 55 eller send e-post til post@fasaderen.no.'}
+                </p>
               )}
 
               <button
